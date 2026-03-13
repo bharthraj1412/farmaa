@@ -132,6 +132,13 @@ def health_db():
     }
 
 
+@app.get("/favicon.ico", include_in_schema=False)
+@app.get("/favicon.png", include_in_schema=False)
+async def favicon():
+    """Return 204 No Content for favicon requests to prevent 404 log noise."""
+    return JSONResponse(status_code=204, content=None)
+
+
 @app.get("/")
 def root():
     return {
@@ -142,6 +149,7 @@ def root():
         "privacy_policy": "/privacy",
         "terms_of_service": "/tos",
     }
+
 
 
 # ── Legal Pages for Google OAuth ──
