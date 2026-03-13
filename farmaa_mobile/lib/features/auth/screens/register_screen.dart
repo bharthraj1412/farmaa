@@ -545,7 +545,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
         Text(l.district, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-        initialValue: _selectedDistrict,
+        value: _selectedDistrict,
           items: _tnDistricts
               .map((d) => DropdownMenuItem(value: d, child: Text(d)))
               .toList(),

@@ -1,7 +1,7 @@
 """Pydantic schemas (request/response models) with field validation."""
 
 import re
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from typing import List, Optional
 from datetime import datetime
 
@@ -67,12 +67,12 @@ class UserOut(BaseModel):
     is_verified: bool = False
     created_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserUpdate(BaseModel):
     name: Optional[str] = Field(default=None, max_length=100)
+    phone: Optional[str] = Field(default=None, max_length=15)
     village: Optional[str] = Field(default=None, max_length=100)
     district: Optional[str] = Field(default=None, max_length=100)
     org: Optional[str] = Field(default=None, max_length=150)
@@ -146,8 +146,12 @@ class CropOut(BaseModel):
     farmer_district: Optional[str] = None
     images: List[str] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
+
+
+class CropListResponse(BaseModel):
+    total: int
+    items: List[CropOut]
 
 
 # ── Orders ──
@@ -198,8 +202,7 @@ class OrderOut(BaseModel):
     farmer_name: Optional[str] = None
     farmer_phone: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Market Prices ──
@@ -212,5 +215,4 @@ class MarketPriceOut(BaseModel):
     source: Optional[str] = None
     recorded_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

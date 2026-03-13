@@ -3,12 +3,12 @@
 import random
 import os
 import logging
-from datetime import datetime, timedelta, timezone
-from fastapi import APIRouter, Depends, HTTPException
+from datetime import datetime, timedelta, timezone, timezone
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from database import get_db
-from models import User
+from models import User, OtpCode
 from schemas import OtpRequest, OtpVerify, GoogleAuthRequest, AuthResponse, UserOut, UserUpdate
 from auth import (
     create_access_token, create_refresh_token, get_current_user_id,
@@ -20,20 +20,12 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
-# In-memory OTP store with expiration
-# In production, use Redis or database with proper SMS service
-_otp_store: dict[str, dict] = {}
-
 # OTP configuration
 OTP_LENGTH = 6
 OTP_EXPIRY_MINUTES = 5
-MAX_OTP_ATTEMPTS = 3
+MAX_OTP_REQUESTS_PER_MINUTE = 3
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 IS_DEVELOPMENT = ENVIRONMENT != "production"
-
-# Rate limiting: track OTP requests per phone
-_otp_rate_limit: dict[str, list] = {}
-MAX_OTP_REQUESTS_PER_MINUTE = 3
 
 
 def generate_otp() -> str:
@@ -41,53 +33,48 @@ def generate_otp() -> str:
     return ''.join([str(random.randint(0, 9)) for _ in range(OTP_LENGTH)])
 
 
-def is_otp_expired(otp_data: dict) -> bool:
-    """Check if OTP has expired."""
-    return datetime.now(timezone.utc) > otp_data['expires_at']
-
-
-def _check_otp_rate_limit(phone: str) -> None:
-    """Check if too many OTP requests have been made."""
-    now = datetime.now(timezone.utc)
-    cutoff = now - timedelta(minutes=1)
-
-    if phone in _otp_rate_limit:
-        # Clean old entries
-        _otp_rate_limit[phone] = [t for t in _otp_rate_limit[phone] if t > cutoff]
-        if len(_otp_rate_limit[phone]) >= MAX_OTP_REQUESTS_PER_MINUTE:
-            raise HTTPException(
-                status_code=429,
-                detail="Too many OTP requests. Please wait before trying again."
-            )
-    else:
-        _otp_rate_limit[phone] = []
-
-    _otp_rate_limit[phone].append(now)
-
-
 @router.post("/send-otp")
-def send_otp(body: OtpRequest):
-    """Send OTP to user's phone number."""
+def send_otp(body: OtpRequest, request: Request, db: Session = Depends(get_db)):
+    """Send OTP to user's phone number and store in database."""
     phone = body.phone.strip()
+    ip_address = request.client.host if request.client else "unknown"
 
     # Validate phone number format
     if not validate_phone_number(phone):
         raise HTTPException(status_code=400, detail="Invalid phone number format")
 
-    # Rate limiting
-    _check_otp_rate_limit(phone)
+    # Rate limiting via DB
+    now = datetime.now(timezone.utc)
+    cutoff = now - timedelta(minutes=1)
+    
+    phone_requests = db.query(OtpCode).filter(
+        OtpCode.phone == phone, 
+        OtpCode.created_at >= cutoff
+    ).count()
+    if phone_requests >= MAX_OTP_REQUESTS_PER_MINUTE:
+        raise HTTPException(status_code=429, detail="Too many OTP requests. Please wait.")
+        
+    ip_requests = db.query(OtpCode).filter(
+        OtpCode.ip_address == ip_address, 
+        OtpCode.created_at >= cutoff
+    ).count()
+    if ip_requests >= 10:
+        raise HTTPException(status_code=429, detail="Too many requests from this IP.")
 
     # Generate OTP (use test OTP only in development)
     otp_code = "123456" if IS_DEVELOPMENT else generate_otp()
 
-    # Store OTP with expiration
-    _otp_store[phone] = {
-        "otp": otp_code,
-        "expires_at": datetime.now(timezone.utc) + timedelta(minutes=OTP_EXPIRY_MINUTES),
-        "attempts": 0
-    }
+    # Store OTP
+    otp_entry = OtpCode(
+        phone=phone,
+        code=otp_code,
+        ip_address=ip_address,
+        expires_at=now + timedelta(minutes=OTP_EXPIRY_MINUTES)
+    )
+    db.add(otp_entry)
+    db.commit()
 
-    # In production, integrate with SMS service here (e.g., Twilio, MSG91)
+    # In production, integrate with SMS service here
     if IS_DEVELOPMENT:
         logger.info(f"[DEV] OTP for {phone}: {otp_code}")
 
@@ -114,30 +101,32 @@ def verify_otp(body: OtpVerify, db: Session = Depends(get_db)):
     if role not in ("farmer", "buyer"):
         raise HTTPException(status_code=400, detail="Role must be 'farmer' or 'buyer'")
 
-    # Get OTP data
-    otp_data = _otp_store.get(phone)
+    # Get OTP data from DB
+    now = datetime.now(timezone.utc)
+    otp_entry = db.query(OtpCode).filter(
+        OtpCode.phone == phone,
+        OtpCode.used == False
+    ).order_by(OtpCode.created_at.desc()).first()
 
-    # Validate OTP exists and hasn't expired
-    if not otp_data:
+    if not otp_entry:
         raise HTTPException(status_code=400, detail="OTP not found. Please request a new OTP.")
 
-    if is_otp_expired(otp_data):
-        _otp_store.pop(phone, None)
+    expires_dt = otp_entry.expires_at
+    if expires_dt.tzinfo is None:
+        expires_dt = expires_dt.replace(tzinfo=timezone.utc)
+    if now > expires_dt:
         raise HTTPException(status_code=400, detail="OTP expired. Please request a new OTP.")
 
-    # Check attempts limit
-    if otp_data['attempts'] >= MAX_OTP_ATTEMPTS:
-        _otp_store.pop(phone, None)
-        raise HTTPException(status_code=400, detail="Too many failed attempts. Please request a new OTP.")
-
     # Verify OTP
-    if body.otp != otp_data['otp']:
-        otp_data['attempts'] += 1
-        remaining_attempts = MAX_OTP_ATTEMPTS - otp_data['attempts']
+    if body.otp != otp_entry.code:
         raise HTTPException(
             status_code=400,
-            detail=f"Invalid OTP. {remaining_attempts} attempts remaining."
+            detail="Invalid OTP."
         )
+
+    # Valid OTP
+    otp_entry.used = True
+    db.commit()
 
     # OTP is valid, proceed with authentication
     user = db.query(User).filter(User.phone == phone).first()
@@ -162,16 +151,13 @@ def verify_otp(body: OtpVerify, db: Session = Depends(get_db)):
             user.name = name
         if role:
             user.role = role
-        user.updated_at = datetime.utcnow()
+        user.updated_at = datetime.now(timezone.utc)
         db.commit()
 
     # Generate tokens
     token_data = {"sub": user.id, "phone": user.phone, "role": user.role}
     access_token = create_access_token(token_data)
     refresh_token = create_refresh_token(token_data)
-
-    # Clear OTP after successful verification
-    _otp_store.pop(phone, None)
 
     return AuthResponse(
         access_token=access_token,
@@ -208,13 +194,18 @@ def update_profile(body: UserUpdate, user_id: str = Depends(get_current_user_id)
 
     if body.name is not None:
         user.name = sanitize_string(body.name, max_length=100)
+    if body.phone is not None:
+        new_phone = body.phone.strip()
+        if new_phone != user.phone:
+            user.phone = new_phone
+            user.is_verified = False
     if body.village is not None:
         user.village = sanitize_string(body.village, max_length=100)
     if body.district is not None:
         user.district = sanitize_string(body.district, max_length=100)
     if body.org is not None:
         user.organization = sanitize_string(body.org, max_length=150)
-    user.updated_at = datetime.utcnow()
+    user.updated_at = datetime.now(timezone.utc)
 
     db.commit()
     db.refresh(user)
@@ -284,7 +275,7 @@ def google_auth(body: GoogleAuthRequest, db: Session = Depends(get_db)):
             user.profile_image = profile_image
         if role:
             user.role = role
-        user.updated_at = datetime.utcnow()
+        user.updated_at = datetime.now(timezone.utc)
         db.commit()
         db.refresh(user)
 

@@ -9,6 +9,7 @@ import '../../../core/router/app_router.dart';
 import '../../../core/services/crop_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../generated/l10n/app_localizations.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class BuyerDashboard extends ConsumerStatefulWidget {
   const BuyerDashboard({super.key});
@@ -62,8 +63,12 @@ class _BuyerDashboardState extends ConsumerState<BuyerDashboard> {
 
     return Scaffold(
       backgroundColor: AppTheme.surfaceCream,
-      body: CustomScrollView(
-        slivers: [
+      body: RefreshIndicator(
+        onRefresh: _load,
+        color: AppTheme.primaryGreen,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
           // ── Amber Header ──
           SliverAppBar(
             expandedHeight: 160,
@@ -245,6 +250,7 @@ class _BuyerDashboardState extends ConsumerState<BuyerDashboard> {
                     ),
         ],
       ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push(AppRoutes.aiChat),
         backgroundColor: AppTheme.primaryGreen,
@@ -263,12 +269,18 @@ class _CropGridCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    return Card(
-      elevation: 0,
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusLarge),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: AppTheme.radiusLarge,
+        boxShadow: AppTheme.cardShadow,
+      ),
+      child: Card(
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(borderRadius: AppTheme.radiusLarge),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
         onTap: onTap,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -278,12 +290,27 @@ class _CropGridCard extends StatelessWidget {
               height: 100,
               width: double.infinity,
               decoration: const BoxDecoration(
-                gradient: AppTheme.cardGradient,
+                color: AppTheme.surfaceCream,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
               ),
-              child: Center(
-                child: Text(crop.emoji, style: const TextStyle(fontSize: 44)),
-              ),
+              clipBehavior: Clip.hardEdge,
+              child: crop.primaryImage.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: crop.primaryImage,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Center(
+                        child: Text(crop.emoji, style: const TextStyle(fontSize: 44)),
+                      ),
+                      errorWidget: (context, url, error) => Center(
+                        child: Text(crop.emoji, style: const TextStyle(fontSize: 44)),
+                      ),
+                    )
+                  : Container(
+                      decoration: const BoxDecoration(gradient: AppTheme.cardGradient),
+                      child: Center(
+                        child: Text(crop.emoji, style: const TextStyle(fontSize: 44)),
+                      ),
+                    ),
             ),
             Padding(
               padding: const EdgeInsets.all(10),
@@ -303,6 +330,21 @@ class _CropGridCard extends StatelessWidget {
                       style: const TextStyle(
                           fontSize: 11, color: AppTheme.textLight),
                     ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      const Icon(Icons.person_outline, size: 12, color: AppTheme.textMedium),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          crop.farmerName,
+                          style: const TextStyle(fontSize: 11, color: AppTheme.textMedium, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ],
+                  ),
                   Text(
                     crop.farmerDistrict,
                     style: const TextStyle(
@@ -360,6 +402,7 @@ class _CropGridCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

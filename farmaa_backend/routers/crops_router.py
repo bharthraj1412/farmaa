@@ -2,12 +2,12 @@
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from database import get_db
 from models import Crop, User
-from schemas import CropCreate, CropUpdate, CropOut
+from schemas import CropCreate, CropUpdate, CropOut, CropListResponse
 from auth import get_current_user_id
 from middleware import sanitize_string, sanitize_search_query
 
@@ -26,8 +26,8 @@ def _map_crop(crop) -> CropOut:
     return c
 
 
-@router.get("", response_model=list[CropOut])
-@router.get("/", response_model=list[CropOut], include_in_schema=False)
+@router.get("", response_model=CropListResponse)
+@router.get("/", response_model=CropListResponse, include_in_schema=False)
 def list_crops(
     category: Optional[str] = None,
     search: Optional[str] = None,
@@ -46,9 +46,13 @@ def list_crops(
         # Sanitize search input to prevent LIKE pattern abuse
         safe_search = sanitize_search_query(search)
         query = query.filter(Crop.name.ilike(f"%{safe_search}%"))
+    total = query.count()
     crops = query.order_by(Crop.created_at.desc()).offset(skip).limit(limit).all()
 
-    return [_map_crop(c) for c in crops]
+    return {
+        "total": total,
+        "items": [_map_crop(c) for c in crops]
+    }
 
 
 @router.get("/my-listings", response_model=list[CropOut])
@@ -95,7 +99,7 @@ def create_crop(body: CropCreate, user_id: str = Depends(get_current_user_id), d
         unit=body.unit,
         image_url=body.image_url,
         location=sanitize_string(body.location, max_length=200) if body.location else None,
-        last_price_update=datetime.utcnow(),
+        last_price_update=datetime.now(timezone.utc),
     )
     db.add(crop)
     db.commit()
@@ -130,8 +134,8 @@ def update_crop(crop_id: str, body: CropUpdate, user_id: str = Depends(get_curre
         setattr(crop, field, value)
 
     if body.price_per_kg is not None:
-        crop.last_price_update = datetime.utcnow()
-    crop.updated_at = datetime.utcnow()
+        crop.last_price_update = datetime.now(timezone.utc)
+    crop.updated_at = datetime.now(timezone.utc)
 
     db.commit()
     db.refresh(crop)

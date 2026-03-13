@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import random
 import uuid
 
@@ -80,7 +80,7 @@ def get_price_trends(
 
     # Try to get real data
     from sqlalchemy import func
-    cutoff = datetime.utcnow() - timedelta(days=days)
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
     results = db.query(
         func.date(MarketPrice.recorded_at).label("date"),
         func.avg(MarketPrice.price_per_kg).label("avg_price"),
@@ -130,7 +130,7 @@ def seed_market_prices(db: Session = Depends(get_db)):
                 price_per_kg=price,
                 market_name=item["market_name"],
                 source="demo_seed",
-                recorded_at=datetime.utcnow() - timedelta(days=random.randint(0, 30)),
+                recorded_at=datetime.now(timezone.utc) - timedelta(days=random.randint(0, 30)),
             )
             db.add(entry)
             count += 1
@@ -160,7 +160,7 @@ def _generate_demo_prices(commodity: Optional[str], district: Optional[str]) -> 
             price_per_kg=price,
             market_name=item["market_name"],
             source="demo",
-            recorded_at=datetime.utcnow(),
+            recorded_at=datetime.now(timezone.utc),
         ))
 
     return prices
@@ -176,7 +176,7 @@ def _generate_demo_trends(crop_name: str, days: int) -> dict:
 
     data = []
     for i in range(days):
-        date = datetime.utcnow() - timedelta(days=days - i)
+        date = datetime.now(timezone.utc) - timedelta(days=days - i)
         variation = random.uniform(-0.05, 0.05)
         # Add a slight upward trend
         trend = 1 + (i / days) * 0.03

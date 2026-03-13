@@ -116,7 +116,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               // Verification badge
               GestureDetector(
                 onTap: user.isVerified == false
-                    ? () => _showKYCDialog(context, l)
+                    ? () => _showVerifyPhoneDialog(context, l, user.phone ?? '')
                     : null,
                 child: Container(
                   padding:
@@ -363,36 +363,40 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  void _showKYCDialog(BuildContext context, AppLocalizations l) {
+  void _showVerifyPhoneDialog(BuildContext context, AppLocalizations l, String phone) {
+    if (phone.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please add a phone number to verify first.')),
+      );
+      return;
+    }
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(l.verifyIdentity),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(l.kycDesc, style: const TextStyle(fontSize: 13)),
-            const SizedBox(height: 16),
-            const Icon(Icons.cloud_upload_outlined,
-                size: 48, color: AppTheme.primaryGreen),
-            Text(l.simulatedUploadReady,
-                style:
-                    const TextStyle(fontSize: 11, color: AppTheme.textLight)),
-          ],
-        ),
+        title: const Text('Verify Phone'),
+        content: Text('We will send a 6-digit OTP to $phone to verify your account.'),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx), child: Text(l.cancel)),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(ctx);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                    content: Text(l.documentsSubmitted),
-                    backgroundColor: AppTheme.successGreen),
-              );
+              try {
+                await ref.read(authProvider.notifier).sendOtp('+91$phone');
+                if (context.mounted) {
+                  context.push(AppRoutes.otp, extra: phone);
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text('Failed to send OTP: $e'),
+                        backgroundColor: AppTheme.errorRed),
+                  );
+                }
+              }
             },
-            child: Text(l.submitDocuments),
+            child: const Text('Send OTP'),
           ),
         ],
       ),

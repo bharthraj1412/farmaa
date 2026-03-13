@@ -1,7 +1,7 @@
 """SQLAlchemy ORM models for Farmaa."""
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import (
     Column, String, Float, Integer, Boolean, DateTime, Text, ForeignKey
 )
@@ -12,6 +12,17 @@ from database import Base
 def new_id() -> str:
     return str(uuid.uuid4())
 
+
+class OtpCode(Base):
+    __tablename__ = "otp_codes"
+
+    id = Column(String, primary_key=True, default=new_id)
+    phone = Column(String(15), nullable=False, index=True)
+    code = Column(String(10), nullable=False)
+    used = Column(Boolean, default=False)
+    ip_address = Column(String(50))
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    expires_at = Column(DateTime, nullable=False)
 
 class User(Base):
     __tablename__ = "users"
@@ -26,8 +37,8 @@ class User(Base):
     organization = Column(String(150))
     profile_image = Column(String(500))
     is_verified = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     crops = relationship("Crop", back_populates="farmer", lazy="joined")
 
@@ -49,9 +60,9 @@ class Crop(Base):
     is_available = Column(Boolean, default=True)
     image_url = Column(String(500))
     location = Column(String(200))
-    last_price_update = Column(DateTime, default=datetime.utcnow)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    last_price_update = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     farmer = relationship("User", back_populates="crops")
 
@@ -70,8 +81,8 @@ class Order(Base):
     payment_id = Column(String(100))
     razorpay_order_id = Column(String(100))
     razorpay_signature = Column(String(200))
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     buyer = relationship("User", foreign_keys=[buyer_id], lazy="joined")
     farmer_ = relationship("User", foreign_keys=[farmer_id], lazy="joined")
@@ -87,4 +98,4 @@ class MarketPrice(Base):
     price_per_kg = Column(Float, nullable=False)
     market_name = Column(String(150))
     source = Column(String(100), default="manual")
-    recorded_at = Column(DateTime, default=datetime.utcnow)
+    recorded_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

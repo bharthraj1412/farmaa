@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import List
 
 from database import get_db
@@ -163,7 +163,7 @@ def update_order_status(order_id: str, body: OrderStatusUpdate, user_id: str = D
             raise HTTPException(status_code=403, detail="Only the buyer can confirm delivery")
 
     order.status = body.status
-    order.updated_at = datetime.utcnow()
+    order.updated_at = datetime.now(timezone.utc)
 
     if body.status == "cancelled":
         crop = db.query(Crop).filter(Crop.id == order.crop_id).first()

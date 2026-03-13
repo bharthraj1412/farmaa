@@ -7,6 +7,7 @@ import '../../features/auth/screens/splash_screen.dart';
 import '../../features/auth/screens/onboarding_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
+import '../../features/auth/screens/otp_screen.dart';
 import '../../features/shared/screens/main_shell.dart';
 import '../../features/farmer/screens/farmer_dashboard.dart';
 import '../../features/farmer/screens/crop_list_screen.dart';
@@ -32,6 +33,7 @@ class AppRoutes {
   static const onboarding = '/onboarding';
   static const login = '/login';
   static const register = '/register';
+  static const otp = '/otp';
   
   // ── Unified Tabs ──
   static const home = '/home';
@@ -141,6 +143,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           builder: (_, __) => const OnboardingScreen()),
       GoRoute(path: AppRoutes.login, builder: (_, __) => const LoginScreen()),
       GoRoute(path: AppRoutes.register, builder: (_, __) => const RegisterScreen()),
+      GoRoute(
+        path: AppRoutes.otp,
+        builder: (context, state) => OtpScreen(phone: state.extra as String? ?? ''),
+      ),
 
       // ── Main Unified Shell ──────────────────────────────────────
       ShellRoute(
