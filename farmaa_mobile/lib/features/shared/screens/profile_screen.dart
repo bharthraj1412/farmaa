@@ -220,15 +220,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   onPressed: () async {
                     final confirm = await showDialog<bool>(
                       context: context,
-                      builder: (_) => AlertDialog(
+                      builder: (dialogContext) => AlertDialog(
                         title: Text(l.logout),
                         content: Text(l.logoutConfirm),
                         actions: [
                           TextButton(
-                              onPressed: () => Navigator.pop(context, false),
+                              onPressed: () => Navigator.pop(dialogContext, false),
                               child: Text(l.cancel)),
                           ElevatedButton(
-                            onPressed: () => Navigator.pop(context, true),
+                            onPressed: () => Navigator.pop(dialogContext, true),
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: AppTheme.errorRed),
                             child: Text(l.logout),
@@ -236,8 +236,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ],
                       ),
                     );
-                    if (confirm == true) {
+                    if (confirm == true && mounted) {
                       await ref.read(authProvider.notifier).logout();
+                      if (mounted) {
+                        context.go(AppRoutes.login);
+                      }
                     }
                   },
                   icon: const Icon(Icons.logout, color: AppTheme.errorRed),
