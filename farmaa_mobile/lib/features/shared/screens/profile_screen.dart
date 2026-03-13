@@ -191,24 +191,51 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         _divider(),
                         _tile(Icons.phone_outlined, l.phone, u.phone ?? '-'),
                         _divider(),
-                        if (u.isFarmer) ...[
-                          if (u.village != null)
-                            _tile(Icons.location_city, l.village, u.village!),
-                          _divider(),
-                          if (u.district != null)
-                            _tile(Icons.map_outlined, l.district, u.district!),
+                        if (u.village != null && u.village!.isNotEmpty) ...[
+                          _tile(Icons.location_city, l.village, u.village!),
                           _divider(),
                         ],
-                        if (u.isBuyer && u.organization != null) ...[
+                        if (u.district != null && u.district!.isNotEmpty) ...[
+                          _tile(Icons.map_outlined, l.district, u.district!),
+                          _divider(),
+                        ],
+                        if (u.organization != null && u.organization!.isNotEmpty) ...[
                           _tile(Icons.business_outlined, l.organization,
                               u.organization!),
                           _divider(),
                         ],
                         _tile(
-                            Icons.badge_outlined, l.role, u.role.toUpperCase()),
+                            Icons.badge_outlined, l.role, 'User account'),
                       ],
                     );
                   },
+                ),
+              ),
+              const SizedBox(height: 24),
+              
+              // ── Tools / Shortcuts (Moved from Dashboards) ──
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: AppTheme.radiusLarge,
+                  boxShadow: AppTheme.cardShadow,
+                ),
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.bar_chart_rounded, color: AppTheme.primaryGreen),
+                      title: Text(l.marketPrices),
+                      trailing: const Icon(Icons.chevron_right, size: 20),
+                      onTap: () => context.push(AppRoutes.farmerPrices),
+                    ),
+                    _divider(),
+                    ListTile(
+                      leading: const Icon(Icons.auto_awesome_rounded, color: AppTheme.primaryGreen),
+                      title: Text(l.aiAssistant),
+                      trailing: const Icon(Icons.chevron_right, size: 20),
+                      onTap: () => context.push(AppRoutes.farmerAI),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 24),
@@ -236,9 +263,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ],
                       ),
                     );
-                    if (confirm == true && mounted) {
+                    if (confirm == true && context.mounted) {
                       await ref.read(authProvider.notifier).logout();
-                      if (mounted) {
+                      if (context.mounted) {
                         context.go(AppRoutes.login);
                       }
                     }
@@ -262,6 +289,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       BuildContext context, UserModel? user, AppLocalizations l) {
     if (user == null) return;
     final nameCtrl = TextEditingController(text: user.name);
+    final phoneCtrl = TextEditingController(text: user.phone ?? '');
     final villageCtrl = TextEditingController(text: user.village ?? '');
     final districtCtrl = TextEditingController(text: user.district ?? '');
     final orgCtrl = TextEditingController(text: user.organization ?? '');
@@ -278,19 +306,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   controller: nameCtrl,
                   decoration: InputDecoration(labelText: l.fullName)),
               const SizedBox(height: 12),
-              if (user.isFarmer) ...[
-                TextField(
-                    controller: villageCtrl,
-                    decoration: InputDecoration(labelText: l.village)),
-                const SizedBox(height: 12),
-                TextField(
-                    controller: districtCtrl,
-                    decoration: InputDecoration(labelText: l.district)),
-              ],
-              if (user.isBuyer)
-                TextField(
-                    controller: orgCtrl,
-                    decoration: InputDecoration(labelText: l.organization)),
+              TextField(
+                  controller: phoneCtrl,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(labelText: l.phone)),
+              const SizedBox(height: 12),
+              TextField(
+                  controller: villageCtrl,
+                  decoration: InputDecoration(labelText: l.village)),
+              const SizedBox(height: 12),
+              TextField(
+                  controller: districtCtrl,
+                  decoration: InputDecoration(labelText: l.district)),
+              const SizedBox(height: 12),
+              TextField(
+                  controller: orgCtrl,
+                  decoration: InputDecoration(labelText: l.organization)),
             ],
           ),
         ),
@@ -302,9 +333,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               try {
                 await ref.read(authProvider.notifier).updateProfile(
                       name: nameCtrl.text,
-                      village: user.isFarmer ? villageCtrl.text : null,
-                      district: user.isFarmer ? districtCtrl.text : null,
-                      organization: user.isBuyer ? orgCtrl.text : null,
+                      phone: phoneCtrl.text.isNotEmpty ? phoneCtrl.text : null,
+                      village: villageCtrl.text.isNotEmpty ? villageCtrl.text : null,
+                      district: districtCtrl.text.isNotEmpty ? districtCtrl.text : null,
+                      organization: orgCtrl.text.isNotEmpty ? orgCtrl.text : null,
                     );
                 if (ctx.mounted) Navigator.pop(ctx);
                 if (context.mounted) {

@@ -230,7 +230,7 @@ class _YieldPredictionTabState extends State<_YieldPredictionTab> {
   Widget _dropdown(
           List<String> items, String value, ValueChanged<String?> onChanged) =>
       DropdownButtonFormField<String>(
-        value: value,
+        initialValue: value,
         items: items
             .map((i) => DropdownMenuItem(value: i, child: Text(i)))
             .toList(),
@@ -381,7 +381,7 @@ class _SustainabilityTabState extends State<_SustainabilityTab> {
         Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
         const SizedBox(height: 6),
         DropdownButtonFormField<String>(
-          value: value,
+          initialValue: value,
           items: items
               .map((i) => DropdownMenuItem(value: i, child: Text(i)))
               .toList(),

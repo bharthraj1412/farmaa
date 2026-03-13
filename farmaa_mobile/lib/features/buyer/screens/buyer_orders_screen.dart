@@ -37,10 +37,9 @@ class _BuyerOrdersScreenState extends ConsumerState<BuyerOrdersScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    return Scaffold(
-      backgroundColor: AppTheme.surfaceCream,
-      appBar: AppBar(title: Text(l.myOrders)),
-      body: _isLoading
+    return Container(
+      color: AppTheme.surfaceCream,
+      child: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _orders.isEmpty
               ? Center(

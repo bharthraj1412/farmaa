@@ -6,19 +6,18 @@ import '../providers/auth_provider.dart';
 import '../../features/auth/screens/splash_screen.dart';
 import '../../features/auth/screens/onboarding_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
-import '../../features/farmer/screens/farmer_shell.dart';
+import '../../features/auth/screens/register_screen.dart';
+import '../../features/shared/screens/main_shell.dart';
 import '../../features/farmer/screens/farmer_dashboard.dart';
 import '../../features/farmer/screens/crop_list_screen.dart';
 import '../../features/farmer/screens/add_edit_crop_screen.dart';
 import '../../features/farmer/screens/market_prices_screen.dart';
 import '../../features/farmer/screens/farmer_ai_screen.dart';
-import '../../features/farmer/screens/farmer_orders_screen.dart';
-import '../../features/buyer/screens/buyer_shell.dart';
+import '../../features/shared/screens/orders_screen.dart';
 import '../../features/buyer/screens/buyer_dashboard.dart';
 import '../../features/buyer/screens/cart_screen.dart';
 import '../../features/buyer/screens/checkout_screen.dart';
 import '../../features/buyer/screens/crop_detail_screen.dart';
-import '../../features/buyer/screens/buyer_orders_screen.dart';
 import '../../features/shared/screens/profile_screen.dart';
 import '../../features/shared/screens/settings_screen.dart';
 import '../../features/ai_chat/screens/ai_chat_screen.dart';
@@ -32,20 +31,32 @@ class AppRoutes {
   static const splash = '/';
   static const onboarding = '/onboarding';
   static const login = '/login';
-  static const farmerHome = '/farmer';
+  static const register = '/register';
+  
+  // ── Unified Tabs ──
+  static const home = '/home';
+  static const myCrops = '/my-crops';
+  static const cart = '/cart';
+  static const orders = '/orders';
+  static const profile = '/profile';
+
+  // ── Legacy references mapped to unified ──
+  static const farmerHome = myCrops;
+  static const buyerHome = home;
+  static const farmerProfile = profile;
+  static const buyerProfile = profile;
+  static const farmerOrders = orders;
+  static const buyerOrders = orders;
+  static const buyerCart = cart;
+
+  // ── Sub-routes ──
   static const farmerCrops = '/farmer/crops';
   static const farmerAddCrop = '/farmer/crops/add';
   static const farmerCropEdit = '/farmer/crops/:id/edit';
   static const farmerPrices = '/farmer/prices';
   static const farmerAI = '/farmer/ai';
-  static const farmerOrders = '/farmer/orders';
-  static const farmerProfile = '/farmer/profile';
-  static const buyerHome = '/buyer';
   static const buyerCropDetail = '/buyer/crop/:id';
-  static const buyerCart = '/buyer/cart';
   static const buyerCheckout = '/buyer/checkout';
-  static const buyerOrders = '/buyer/orders';
-  static const buyerProfile = '/buyer/profile';
   static const aiChat = '/ai-chat';
   static const settings = '/settings';
   static const admin = '/admin';
@@ -107,25 +118,20 @@ final routerProvider = Provider<GoRouter>((ref) {
         final publicRoutes = [
           AppRoutes.onboarding,
           AppRoutes.login,
+          AppRoutes.register,
         ];
         if (publicRoutes.contains(location)) return null;
         return AppRoutes.login;
       }
 
       // Authenticated logic — redirect away from auth screens
-      if ([AppRoutes.splash, AppRoutes.onboarding, AppRoutes.login]
+      // Authenticated logic — redirect away from auth screens
+      if ([AppRoutes.splash, AppRoutes.onboarding, AppRoutes.login, AppRoutes.register]
           .contains(location)) {
-        return user.isFarmer ? AppRoutes.farmerHome : AppRoutes.buyerHome;
+        return AppRoutes.home; // Everyone goes to Market first
       }
 
-      // Role-based guards
-      if (location.startsWith('/farmer') && !user.isFarmer && !user.isAdmin) {
-        return AppRoutes.buyerHome;
-      }
-      if (location.startsWith('/buyer') && user.isFarmer && !user.isAdmin) {
-        return AppRoutes.farmerHome;
-      }
-
+      // No more role-based guards needed! Everyone can access everything.
       return null;
     },
     routes: [
@@ -134,14 +140,20 @@ final routerProvider = Provider<GoRouter>((ref) {
           path: AppRoutes.onboarding,
           builder: (_, __) => const OnboardingScreen()),
       GoRoute(path: AppRoutes.login, builder: (_, __) => const LoginScreen()),
+      GoRoute(path: AppRoutes.register, builder: (_, __) => const RegisterScreen()),
 
-      // ── Farmer Shell ──────────────────────────────────────
+      // ── Main Unified Shell ──────────────────────────────────────
       ShellRoute(
-        builder: (context, state, child) => FarmerShell(child: child),
+        builder: (context, state, child) => MainShell(child: child),
         routes: [
-          GoRoute(
-              path: AppRoutes.farmerHome,
-              builder: (_, __) => const FarmerDashboard()),
+          // Unified 5 Tabs
+          GoRoute(path: AppRoutes.home, builder: (_, __) => const BuyerDashboard()),
+          GoRoute(path: AppRoutes.myCrops, builder: (_, __) => const FarmerDashboard()),
+          GoRoute(path: AppRoutes.cart, builder: (_, __) => const CartScreen()),
+          GoRoute(path: AppRoutes.orders, builder: (_, __) => const OrdersScreen()),
+          GoRoute(path: AppRoutes.profile, builder: (_, __) => const ProfileScreen()),
+
+          // Sub-routes
           GoRoute(
               path: AppRoutes.farmerCrops,
               builder: (_, __) => const CropListScreen()),
@@ -171,30 +183,11 @@ final routerProvider = Provider<GoRouter>((ref) {
               path: AppRoutes.farmerAI,
               builder: (_, __) => const FarmerAIScreen()),
           GoRoute(
-              path: AppRoutes.farmerOrders,
-              builder: (_, __) => const FarmerOrdersScreen()),
-          GoRoute(
-              path: AppRoutes.farmerProfile,
-              builder: (_, __) => const ProfileScreen()),
-        ],
-      ),
-
-      // ── Buyer Shell ───────────────────────────────────────
-      ShellRoute(
-        builder: (context, state, child) => BuyerShell(child: child),
-        routes: [
-          GoRoute(
-              path: AppRoutes.buyerHome,
-              builder: (_, __) => const BuyerDashboard()),
-          GoRoute(
             path: AppRoutes.buyerCropDetail,
             builder: (context, state) => CropDetailScreen(
               cropId: state.pathParameters['id']!,
             ),
           ),
-          GoRoute(
-              path: AppRoutes.buyerCart,
-              builder: (_, __) => const CartScreen()),
           GoRoute(
             path: AppRoutes.buyerCheckout,
             builder: (context, state) {
@@ -206,12 +199,6 @@ final routerProvider = Provider<GoRouter>((ref) {
               );
             },
           ),
-          GoRoute(
-              path: AppRoutes.buyerOrders,
-              builder: (_, __) => const BuyerOrdersScreen()),
-          GoRoute(
-              path: AppRoutes.buyerProfile,
-              builder: (_, __) => const ProfileScreen()),
         ],
       ),
       GoRoute(

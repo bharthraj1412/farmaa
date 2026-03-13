@@ -1,33 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/api/api_client.dart';
-import '../../../main.dart'; // For initializeAppServices
+import '../../../core/router/app_router.dart';
 import '../../../generated/l10n/app_localizations.dart';
 
+// ── Tamil Nadu Districts ──────────────────────────────────────────────────────
+const List<String> _tnDistricts = [
+  'Ariyalur',
+  'Chengalpattu',
+  'Chennai',
+  'Coimbatore',
+  'Cuddalore',
+  'Dharmapuri',
+  'Dindigul',
+  'Erode',
+  'Kallakurichi',
+  'Kancheepuram',
+  'Kanyakumari',
+  'Karur',
+  'Krishnagiri',
+  'Madurai',
+  'Mayiladuthurai',
+  'Nagapattinam',
+  'Namakkal',
+  'Nilgiris',
+  'Perambalur',
+  'Pudukkottai',
+  'Ramanathapuram',
+  'Ranipet',
+  'Salem',
+  'Sivaganga',
+  'Tenkasi',
+  'Thanjavur',
+  'Theni',
+  'Thoothukudi',
+  'Tiruchirappalli',
+  'Tirunelveli',
+  'Tirupathur',
+  'Tiruppur',
+  'Tiruvallur',
+  'Tiruvannamalai',
+  'Tiruvarur',
+  'Vellore',
+  'Viluppuram',
+  'Virudhunagar',
+];
 
-class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends ConsumerStatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen>
+class _RegisterScreenState extends ConsumerState<RegisterScreen>
     with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
 
   // Step tracking
-  int _step = 0; // 0=Phone, 1=OTP
+  int _step = 0; // 0=Phone, 1=OTP+Role, 2=Profile
 
   // Controllers
   final _phoneCtrl = TextEditingController();
   final _otpCtrl = TextEditingController();
+  final _nameCtrl = TextEditingController();
+  final _villageCtrl = TextEditingController();
+  final _orgCtrl = TextEditingController();
 
+  String? _selectedDistrict;
   bool _isLoading = false;
   String? _errorMessage;
   bool _isGoogleLogin = false;
@@ -43,14 +87,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   void initState() {
     super.initState();
     _stepController = AnimationController(
-      duration: const Duration(milliseconds: 350),
-      vsync: this,
-    );
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(1, 0),
-      end: Offset.zero,
-    ).animate(
-        CurvedAnimation(parent: _stepController, curve: Curves.easeOutCubic));
+        duration: const Duration(milliseconds: 350), vsync: this);
+    _slideAnimation = Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
+        .animate(CurvedAnimation(
+            parent: _stepController, curve: Curves.easeOutCubic));
     _stepController.forward();
   }
 
@@ -58,6 +98,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   void dispose() {
     _phoneCtrl.dispose();
     _otpCtrl.dispose();
+    _nameCtrl.dispose();
+    _villageCtrl.dispose();
+    _orgCtrl.dispose();
     _stepController.dispose();
     super.dispose();
   }
@@ -94,21 +137,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             .sendOtp('+91${_phoneCtrl.text.trim()}');
         _startCountdown();
         _animateStep(1);
+      } else if (_step == 1) {
+        // Go to profile details
+        _animateStep(2);
       } else {
         if (_isGoogleLogin) {
-          // Google login — default login flow without Role/Profile for existing accounts
-          // Roles will be managed based on backend data if the user already exists.
-          // Note: Full registration is available in Register Screen.
+          // Google login — complete with profile
           await ref.read(authProvider.notifier).loginWithGoogle(
-                role: 'buyer', // Default required by schema; backend ignores if user exists.
+                role: AppConstants.roleFarmer, // Send a default unified role
+                village: _villageCtrl.text.trim().isNotEmpty ? _villageCtrl.text.trim() : null,
+                district: _selectedDistrict,
+                organization: _orgCtrl.text.trim().isNotEmpty ? _orgCtrl.text.trim() : null,
               );
         } else {
-          // OTP login — verify OTP
+          // OTP login — verify OTP + create account
           await ref.read(authProvider.notifier).verifyOtp(
                 phone: '+91${_phoneCtrl.text.trim()}',
                 otp: _otpCtrl.text.trim(),
-                role: 'buyer', // Default required by schema; backend ignores if user exists.
-                name: 'User',
+                role: AppConstants.roleFarmer, // Send a default unified role
+                name: _nameCtrl.text.trim(),
+                village: _villageCtrl.text.trim().isNotEmpty ? _villageCtrl.text.trim() : null,
+                district: _selectedDistrict,
+                organization: _orgCtrl.text.trim().isNotEmpty ? _orgCtrl.text.trim() : null,
               );
         }
         // Router will auto-redirect based on role
@@ -132,8 +182,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       _isGoogleLogin = true;
       _errorMessage = null;
     });
-    // Skip phone/OTP — jump straight to google sign in submit
-    _goToNextStep();
+    // Skip phone/OTP — jump straight to role selection
+    _animateStep(1);
   }
 
   Future<void> _resendOtp() async {
@@ -151,71 +201,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     }
   }
 
-  void _showServerConfig() {
-    final ctrl = TextEditingController(text: AppConstants.baseUrl);
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Server Configuration'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Set your backend URL manually if auto-discovery fails.',
-              style: TextStyle(fontSize: 13, color: AppTheme.textLight),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: ctrl,
-              decoration: const InputDecoration(
-                labelText: 'Backend URL',
-                hintText: 'http://192.168.x.x:8000',
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context).cancel),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final newUrl = ctrl.text.trim();
-              if (newUrl.startsWith('http')) {
-                AppConstants.baseUrl = newUrl;
-                final nav = Navigator.of(context);
-                final messenger = ScaffoldMessenger.of(context);
-
-                await ApiClient().loadPersistedBaseUrl(); // Sync Dio
-                // Explicitly save to storage
-                const storage = FlutterSecureStorage();
-                await storage.write(
-                    key: AppConstants.baseUrlKey, value: newUrl);
-
-                if (mounted) {
-                  nav.pop();
-                  messenger.showSnackBar(
-                    SnackBar(content: Text('Server set to: $newUrl')),
-                  );
-                }
-              }
-            },
-            child: Text(AppLocalizations.of(context).save),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Lazy-load background services
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => initializeAppServices());
-
     final l = AppLocalizations.of(context);
 
+    // Apply SingleChildScrollView wrap around the whole structure to prevent bottom overflow
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(gradient: AppTheme.heroGradient),
@@ -231,21 +221,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                       padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text('🌾', style: TextStyle(fontSize: 40)),
-                              IconButton(
-                                icon: const Icon(Icons.settings_ethernet,
-                                    color: Colors.white70),
-                                onPressed: _showServerConfig,
-                                tooltip: 'Server Settings',
-                              ),
+                              Text('🌾', style: TextStyle(fontSize: 40)),
                             ],
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '${l.login} ${l.appName}',
+                            'Register for ${l.appName}',
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w800,
@@ -259,15 +243,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                 fontSize: 14, color: Colors.white70),
                           ),
                           const SizedBox(height: 24),
-
                           // Progress indicators
                           Row(
-                            children: List.generate(2, (i) => _buildStepDot(i)),
+                            children:
+                                List.generate(3, (i) => _buildStepDot(i)),
                           ),
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 24),
 
                     // Form card
@@ -307,6 +290,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         return l.enterPhoneStep;
       case 1:
         return l.verifyOtpStep;
+      case 2:
+        return l.profileStep;
       default:
         return '';
     }
@@ -336,12 +321,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         return _buildPhoneStep(l);
       case 1:
         return _buildOtpStep(l);
+      case 2:
+        return _buildProfileStep(l);
       default:
         return const SizedBox();
     }
   }
-
-  // ── Step 0: Phone ─────────────────────────────────────────
 
   Widget _buildPhoneStep(AppLocalizations l) {
     return Column(
@@ -366,18 +351,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             suffixIcon: Icon(Icons.phone, color: AppTheme.primaryGreen),
           ),
           validator: (v) {
-            if (v == null || v.isEmpty) {
-              return l.enterPhone;
-            }
+            if (v == null || v.isEmpty) return l.enterPhone;
             if (v.length != 10) return l.enterPhone;
             return null;
           },
         ),
         const SizedBox(height: 8),
-        Text(
-          l.enterPhoneStep,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
+        Text(l.enterPhoneStep, style: Theme.of(context).textTheme.bodySmall),
         if (_errorMessage != null) ...[
           const SizedBox(height: 16),
           _buildErrorBanner(),
@@ -385,7 +365,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         const SizedBox(height: 24),
         _buildSubmitButton(l.sendOtp),
         const SizedBox(height: 20),
-        // ── Divider ──
         const Row(
           children: [
             Expanded(child: Divider()),
@@ -401,7 +380,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           ],
         ),
         const SizedBox(height: 20),
-        // ── Google Sign-In Button ──
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
@@ -423,11 +401,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             ),
           ),
         ),
+        const Spacer(),
+        Center(
+          child: TextButton(
+            onPressed: () => context.go(AppRoutes.login),
+            child: const Text('Already have an account? Login'),
+          ),
+        ),
       ],
     );
   }
-
-  // ── Step 1: OTP + Role ────────────────────────────────────
 
   Widget _buildOtpStep(AppLocalizations l) {
     return Column(
@@ -473,6 +456,41 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             ),
           ),
           const SizedBox(height: 20),
+        ] else ...[
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFF4285F4).withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                  color: const Color(0xFF4285F4).withValues(alpha: 0.2)),
+            ),
+            child: const Row(
+              children: [
+                Text('G',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF4285F4))),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Google Account',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700, fontSize: 14)),
+                      Text('Continue to complete profile',
+                          style: TextStyle(
+                              fontSize: 12, color: AppTheme.textLight)),
+                    ],
+                  ),
+                ),
+                Icon(Icons.check_circle, color: Color(0xFF34A853), size: 22),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
         ],
         if (_errorMessage != null) ...[
           const SizedBox(height: 16),
@@ -483,7 +501,81 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         const SizedBox(height: 12),
         Center(
           child: TextButton(
-            onPressed: () => _animateStep(0),
+            onPressed: () {
+              if (_isGoogleLogin) {
+                setState(() => _isGoogleLogin = false);
+              }
+              _animateStep(0);
+            },
+            child: Text(_isGoogleLogin ? l.back : l.changeNumber),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProfileStep(AppLocalizations l) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l.yourName, style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: _nameCtrl,
+          textCapitalization: TextCapitalization.words,
+          decoration: InputDecoration(
+            hintText: l.fullName,
+            prefixIcon: const Icon(Icons.person_outline),
+          ),
+          validator: (v) => (v == null || v.trim().isEmpty) ? l.yourName : null,
+        ),
+        const SizedBox(height: 20),
+        const SizedBox(height: 20),
+        Text(l.village, style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: _villageCtrl,
+          textCapitalization: TextCapitalization.words,
+          decoration: const InputDecoration(
+            hintText: 'e.g., Kovilpatti',
+            prefixIcon: Icon(Icons.location_city_outlined),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text(l.district, style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 8),
+        DropdownButtonFormField<String>(
+        initialValue: _selectedDistrict,
+          items: _tnDistricts
+              .map((d) => DropdownMenuItem(value: d, child: Text(d)))
+              .toList(),
+          onChanged: (v) => setState(() => _selectedDistrict = v),
+          decoration: InputDecoration(
+            hintText: l.selectDistrict,
+            prefixIcon: const Icon(Icons.map_outlined),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text(l.organization, style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: _orgCtrl,
+          textCapitalization: TextCapitalization.words,
+          decoration: const InputDecoration(
+            hintText: 'e.g., Sri Balaji Traders (Optional)',
+            prefixIcon: Icon(Icons.business_outlined),
+          ),
+        ),
+        if (_errorMessage != null) ...[
+          const SizedBox(height: 16),
+          _buildErrorBanner(),
+        ],
+        const SizedBox(height: 24),
+        _buildSubmitButton(l.createAccount),
+        const SizedBox(height: 12),
+        Center(
+          child: TextButton(
+            onPressed: () => _animateStep(1),
             child: Text(l.back),
           ),
         ),

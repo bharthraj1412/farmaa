@@ -36,10 +36,10 @@ class NotificationService {
       _channelName,
       importance: Importance.max,
     );
-    await _local
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
+    final androidImplementation = _local.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+    await androidImplementation?.createNotificationChannel(channel);
+    await androidImplementation?.requestNotificationsPermission();
 
     // ── FCM permissions ────────────────────────────────────────
     final settings = await _fcm.requestPermission(

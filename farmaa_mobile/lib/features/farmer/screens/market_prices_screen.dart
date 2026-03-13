@@ -118,7 +118,7 @@ class _MarketPricesScreenState extends ConsumerState<MarketPricesScreen>
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
             child: DropdownButtonFormField<String>(
-              value: _selectedDistrict,
+              initialValue: _selectedDistrict,
               items: _tnDistricts
                   .map((d) => DropdownMenuItem(value: d, child: Text(d)))
                   .toList(),

@@ -1,0 +1,6 @@
+﻿Analyzing farmaa_mobile...                                      
+
+   info - Unnecessary 'const' keyword - lib\features\shared\screens\main_shell.dart:65:27 - unnecessary_const
+   info - Unnecessary 'const' keyword - lib\features\shared\screens\main_shell.dart:75:27 - unnecessary_const
+   info - Unnecessary 'const' keyword - lib\features\shared\screens\main_shell.dart:80:27 - unnecessary_const
+

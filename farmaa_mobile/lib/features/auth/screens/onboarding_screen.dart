@@ -167,24 +167,72 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => _nextPage(pages.length),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: page.bgColor,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppTheme.radiusRound,
-                      ),
-                    ),
-                    child: Text(
-                      _currentPage == pages.length - 1 ? l.getStarted : l.next,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
+                  child: _currentPage == pages.length - 1
+                      ? Column(
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: () => context.go(AppRoutes.login),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: page.bgColor,
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: AppTheme.radiusRound,
+                                  ),
+                                ),
+                                child: const Text(
+                                  'LOGIN',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton(
+                                onPressed: () => context.go(AppRoutes.register),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  side: const BorderSide(color: Colors.white, width: 2),
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: AppTheme.radiusRound,
+                                  ),
+                                ),
+                                child: const Text(
+                                  'REGISTER',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : ElevatedButton(
+                          onPressed: () => _nextPage(pages.length),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: page.bgColor,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: AppTheme.radiusRound,
+                            ),
+                          ),
+                          child: Text(
+                            l.next,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 32),

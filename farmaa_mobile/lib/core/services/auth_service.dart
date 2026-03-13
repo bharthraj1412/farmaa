@@ -160,12 +160,14 @@ class AuthService {
   /// Updates editable profile fields.
   Future<UserModel> updateProfile({
     required String name,
+    String? phone,
     String? village,
     String? district,
     String? organization,
   }) async {
     final response = await _dio.patch('/auth/me', data: {
       'name': name,
+      if (phone != null) 'phone': phone,
       if (village != null) 'village': village,
       if (district != null) 'district': district,
       if (organization != null) 'org': organization,

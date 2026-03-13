@@ -107,6 +107,7 @@ class AuthNotifier extends Notifier<AuthState> {
 
   Future<void> updateProfile({
     required String name,
+    String? phone,
     String? village,
     String? district,
     String? organization,
@@ -115,6 +116,7 @@ class AuthNotifier extends Notifier<AuthState> {
     try {
       final user = await AuthService.instance.updateProfile(
         name: name,
+        phone: phone,
         village: village,
         district: district,
         organization: organization,

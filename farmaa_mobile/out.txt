@@ -1,0 +1,13 @@
+﻿Analyzing farmaa_mobile...                                      
+
+warning - Unused import: '../../../core/router/app_router.dart' - lib\features\auth\screens\login_screen.dart:12:8 - unused_import
+warning - Unused import: 'package:go_router/go_router.dart' - lib\features\auth\screens\login_screen.dart:13:8 - unused_import
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\auth\screens\register_screen.dart:548:11 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\farmer\screens\farmer_ai_screen.dart:233:9 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\farmer\screens\farmer_ai_screen.dart:384:11 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\farmer\screens\market_prices_screen.dart:121:15 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\features\shared\screens\main_shell.dart:63:11 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\shared\screens\main_shell.dart:73:11 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\shared\screens\main_shell.dart:78:11 - prefer_const_constructors
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\shared\screens\profile_screen.dart:269:25 - use_build_context_synchronously
+

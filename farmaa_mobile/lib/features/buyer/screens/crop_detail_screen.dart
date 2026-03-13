@@ -29,7 +29,15 @@ class _CropDetailScreenState extends ConsumerState<CropDetailScreen> {
   Future<void> _load() async {
     try {
       final crop = await CropService.instance.getCropById(widget.cropId);
-      if (mounted) setState(() => _crop = crop);
+      if (mounted) {
+        setState(() {
+          _crop = crop;
+          double minOrder = crop.minOrderKg ?? 10;
+          _qty = minOrder;
+          if (_qty > crop.stockKg) _qty = crop.stockKg;
+          if (_qty < 0) _qty = 0;
+        });
+      }
     } catch (_) {
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -276,16 +284,25 @@ class _CropDetailScreenState extends ConsumerState<CropDetailScreen> {
                         ),
                       ],
                     ),
-                    Slider(
-                      value: _qty,
-                      min: crop.minOrderKg ?? 10,
-                      max: crop.stockKg,
-                      divisions: ((crop.stockKg - (crop.minOrderKg ?? 10)) / 10)
-                          .round()
-                          .clamp(1, 100),
-                      activeColor: AppTheme.primaryGreen,
-                      onChanged: (v) => setState(() => _qty = v),
-                    ),
+                    if (crop.stockKg >= (crop.minOrderKg ?? 10))
+                      Slider(
+                        value: _qty.clamp(crop.minOrderKg ?? 10, crop.stockKg),
+                        min: crop.minOrderKg ?? 10,
+                        max: crop.stockKg,
+                        divisions: ((crop.stockKg - (crop.minOrderKg ?? 10)) / 10)
+                            .round()
+                            .clamp(1, 100),
+                        activeColor: AppTheme.primaryGreen,
+                        onChanged: (v) => setState(() => _qty = v),
+                      )
+                    else
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        child: Text(
+                          'Not enough stock to meet minimum order',
+                          style: TextStyle(color: AppTheme.errorRed, fontSize: 13),
+                        ),
+                      ),
                   ],
                 ),
 
