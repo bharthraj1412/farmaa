@@ -1,0 +1,270 @@
+{
+  "@@locale": "ta",
+
+  "appName": "பண்ணை",
+  "tagline": "விவசாயத்திலிருந்து எதிர்காலத்திற்கு",
+
+  "login": "உள்நுழை",
+  "enterPhone": "தொலைபேசி எண்ணை உள்ளிடவும்",
+  "sendOtp": "OTP அனுப்பு",
+  "enterOtp": "OTP உள்ளிடவும்",
+  "verifyOtp": "OTP சரிபார்க்கவும்",
+  "resendOtp": "OTP மீண்டும் அனுப்பு",
+  "resendIn": "{seconds} வினாடியில் மீண்டும் அனுப்பு",
+  "@resendIn": {
+    "placeholders": {
+      "seconds": { "type": "int" }
+    }
+  },
+  "otpSentTo": "+91 {phone} க்கு OTP அனுப்பப்பட்டது",
+  "@otpSentTo": {
+    "placeholders": {
+      "phone": { "type": "String" }
+    }
+  },
+  "mobileNumber": "மொபைல் எண்",
+  "iAmA": "நான் ஒரு...",
+  "farmer": "விவசாயி",
+  "buyer": "வாங்குபவர்",
+  "farmerDesc": "உங்கள் தானியங்களை பட்டியலிடுங்கள்",
+  "buyerDesc": "தானியங்களை உலாவி ஆர்டர் செய்யுங்கள்",
+  "continue_btn": "தொடரவும்",
+  "createAccount": "கணக்கு உருவாக்கு 🌱",
+  "changeNumber": "← எண்ணை மாற்று",
+  "back": "← திரும்பு",
+  "enterPhoneStep": "தொடர உங்கள் மொபைல் எண்ணை உள்ளிடவும்",
+  "verifyOtpStep": "OTP சரிபார்த்து உங்கள் பங்கை தேர்ந்தெடுக்கவும்",
+  "profileStep": "உங்களைப் பற்றி சொல்லுங்கள்",
+  "yourName": "உங்கள் பெயர் *",
+  "fullName": "முழு பெயர்",
+  "village": "கிராமம்",
+  "district": "மாவட்டம் *",
+  "selectDistrict": "மாவட்டத்தை தேர்ந்தெடுக்கவும்",
+  "organization": "நிறுவனம் / நிறுவனம்",
+
+  "dashboard": "டாஷ்போர்டு",
+  "browse": "உலாவு",
+  "cart": "கார்ட்",
+  "orders": "ஆர்டர்கள்",
+  "profile": "சுயவிவரம்",
+  "settings": "அமைப்புகள்",
+
+  "marketPrice": "சந்தை விலை",
+  "pricePerKg": "விலை / கிலோ",
+  "stockAvailable": "கையிருப்பு",
+  "minOrder": "குறைந்தபட்ச ஆர்டர்",
+  "quantity": "அளவு",
+  "totalAmount": "மொத்த தொகை",
+  "allGrains": "அனைத்து தானியங்கள்",
+  "listingsFound": "{count} பட்டியல்கள் கிடைத்தன",
+  "@listingsFound": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "searchCrops": "தானியங்களை தேடுங்கள்...",
+  "noGrainsFound": "தானியங்கள் இல்லை",
+  "tryDifferentSearch": "வேறு தேடல் அல்லது வகையை முயற்சிக்கவும்",
+  "loading": "ஏற்றுகிறது...",
+
+  "addToCart": "கார்ட்டில் சேர்",
+  "buyNow": "இப்போது வாங்கு",
+  "viewCart": "கார்ட் பார்க்கவும்",
+  "checkout": "செலுத்து",
+  "payNow": "இப்போது செலுத்துங்கள்",
+  "orderSummary": "ஆர்டர் சுருக்கம்",
+  "deliveryAddress": "டெலிவரி முகவரி",
+  "enterDeliveryAddress": "முழு டெலிவரி முகவரியை உள்ளிடவும்",
+  "cartEmpty": "உங்கள் கார்ட் காலியாக உள்ளது",
+  "cartEmptyHint": "சந்தைக்கு திரும்பி பொருட்களை சேர்க்கவும்.",
+  "browseGrains": "தானியங்கள் உலாவு",
+  "proceedToCheckout": "செலுத்துக்கு தொடரவும்",
+  "remove": "அகற்று",
+
+  "orderPlaced": "ஆர்டர் வைக்கப்பட்டது! 🎉",
+  "orderConfirmed": "உங்கள் ஆர்டர் உறுதிப்படுத்தப்பட்டு விவசாயிக்கு அனுப்பப்பட்டது.",
+  "trackOrder": "ஆர்டரை கண்காணி",
+  "continueShopping": "ஷாப்பிங் தொடரவும்",
+  "orderId": "ஆர்டர் ஐடி",
+  "crop": "பயிர்",
+  "amountPaid": "செலுத்திய தொகை",
+  "myOrders": "என் ஆர்டர்கள்",
+  "noOrdersYet": "இன்னும் ஆர்டர்கள் இல்லை",
+  "ordersAppearHere": "உங்கள் ஆர்டர்கள் இங்கே காட்டப்படும்",
+  "orderDetail": "ஆர்டர் விவரம்",
+  "estimatedDelivery": "எதிர்பார்க்கப்படும் டெலிவரி",
+  "farmerContact": "விவசாயி தொடர்பு",
+  "pending": "நிலுவையில்",
+  "confirmed": "உறுதிப்படுத்தப்பட்டது",
+  "processing": "செயலாக்கப்படுகிறது",
+  "shipped": "அனுப்பப்பட்டது",
+  "delivered": "வழங்கப்பட்டது",
+  "cancelled": "ரத்து செய்யப்பட்டது",
+  "paid": "செலுத்தப்பட்டது",
+  "failed": "தோல்வியடைந்தது",
+  "refunded": "திரும்பப் பெறப்பட்டது",
+  "confirmOrder": "ஆர்டரை உறுதிசெய்",
+  "shipOrder": "அனுப்பியதாக குறி",
+  "cancelOrder": "ஆர்டரை ரத்து செய்",
+  "buyerInfo": "வாங்குபவர் தகவல்",
+
+  "listNewGrain": "புதிய தானியத்தை பட்டியலிடு",
+  "editListing": "பட்டியலை திருத்து",
+  "grainCategory": "தானிய வகை *",
+  "grainName": "தானியத்தின் பெயர் *",
+  "grainNameHint": "எ.கா., பாஸ்மதி அரிசி",
+  "variety": "இரகம் (விருப்பமானது)",
+  "varietyHint": "எ.கா., HHB 67, K 9107",
+  "priceKgLabel": "ஒரு கிலோவிற்கு விலை (₹) *",
+  "stockKgLabel": "கையிருப்பு (கிலோ) *",
+  "minOrderLabel": "குறைந்தபட்ச ஆர்டர் (கிலோ)",
+  "description": "விளக்கம்",
+  "descriptionHint": "தானிய தரம், வளரும் நிலைகள், சான்றிதழ்களை விளக்குங்கள்...",
+  "submitForReview": "மதிப்பாய்வுக்கு சமர்ப்பிக்கவும்",
+  "saveChanges": "மாற்றங்களை சேமி",
+  "qaNotice": "உங்கள் பட்டியல் நேரடியாக செல்வதற்கு முன் எங்கள் தரக் குழுவால் மதிப்பாய்வு செய்யப்படும்.",
+  "cropUpdated": "தானியம் புதுப்பிக்கப்பட்டது! QA மதிப்பாய்வு நிலுவையில்.",
+  "cropSubmitted": "QA அனுமதிக்காக தானியம் சமர்ப்பிக்கப்பட்டது! ✅",
+
+  "marketPrices": "சந்தை விலைகள்",
+  "aiAssistant": "AI உதவியாளர்",
+  "receivedOrders": "பெற்ற ஆர்டர்கள்",
+  "myCrops": "என் தானியங்கள்",
+  "addGrain": "தானியம் சேர்க்கவும்",
+
+  "verifiedAccount": "சரிபார்க்கப்பட்ட கணக்கு",
+  "verificationPending": "சரிபார்ப்பு நிலுவையில் ⓘ",
+  "editProfile": "சுயவிவரம் திருத்து",
+  "name": "பெயர்",
+  "phone": "தொலைபேசி",
+  "role": "பங்கு",
+  "logout": "வெளியேறு",
+  "logoutConfirm": "நீங்கள் வெளியேற விரும்புகிறீர்களா?",
+  "cancel": "ரத்து செய்",
+  "save": "சேமி",
+  "saveChangesBtn": "மாற்றங்களை சேமி",
+  "profileUpdated": "சுயவிவரம் வெற்றிகரமாக புதுப்பிக்கப்பட்டது",
+  "updateFailed": "புதுப்பிப்பு தோல்வியடைந்தது",
+
+  "notifications": "அறிவிப்புகள்",
+  "pushNotifications": "புஷ் அறிவிப்புகள்",
+  "pushNotificationsSubtitle": "பயன்பாட்டு அறிவிப்புகளை பெறுங்கள்",
+  "priceAlerts": "விலை எச்சரிக்கைகள்",
+  "priceAlertsSubtitle": "சந்தை விலைகள் மாறும்போது அறிவிப்பு",
+  "orderUpdates": "ஆர்டர் புதுப்பிப்புகள்",
+  "orderUpdatesSubtitle": "ஆர்டர் நிலை மாற்றங்களில் அறிவிப்பு",
+  "language": "மொழி",
+  "selectLanguage": "மொழியை தேர்ந்தெடுக்கவும்",
+  "english": "ஆங்கிலம்",
+  "tamil": "தமிழ்",
+  "about": "பற்றி",
+  "appVersion": "பயன்பாட்டு பதிப்பு",
+  "privacyPolicy": "தனியுரிமை கொள்கை",
+  "termsOfService": "சேவை விதிமுறைகள்",
+  "helpSupport": "உதவி & ஆதரவு",
+  "accountActions": "கணக்கு நடவடிக்கைகள்",
+  "account": "கணக்கு",
+
+  "networkError": "நெட்வொர்க் பிழை",
+  "networkErrorMsg": "சேவையகத்துடன் இணைக்க முடியவில்லை. இணைய இணைப்பை சரிபார்க்கவும்.",
+  "retry": "மீண்டும் முயற்சி",
+  "offlineMode": "ஆஃப்லைன் முறை",
+
+  "verifyIdentity": "அடையாளத்தை சரிபார்க்கவும்",
+  "kycDesc": "சரிபார்க்கப்பட்ட விற்பனையாளராக, உங்கள் ஆதார் அல்லது PAN கார்டு விவரங்களை பதிவேற்றவும்.",
+  "submitDocuments": "ஆவணங்களை சமர்ப்பிக்கவும்",
+  "documentsSubmitted": "ஆவணங்கள் சமர்ப்பிக்கப்பட்டன! சரிபார்ப்பு 24 மணி நேரத்தில் முடியும்.",
+
+  "aboutCrop": "பற்றி",
+  "priceGuarantee": "விலை புதுப்பிக்கப்பட்டது: {date}",
+  "@priceGuarantee": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "aiPriceInsight": "AI சந்தை நுண்ணறிவு",
+  "farmerDistrict": "{district} மாவட்டம்",
+  "@farmerDistrict": {
+    "placeholders": {
+      "district": { "type": "String" }
+    }
+  },
+  "stockKg": "{stock} கிலோ கிடைக்கிறது",
+  "@stockKg": {
+    "placeholders": {
+      "stock": { "type": "String" }
+    }
+  },
+
+  "grainRice": "அரிசி",
+  "grainWheat": "கோதுமை",
+  "grainMillet": "சோளம்",
+  "grainBarley": "வாற்கோதுமை",
+  "grainSorghum": "மக்காச்சோளம்",
+  "grainMaize": "சோளம்",
+  "grainPulses": "பருப்பு வகைகள்",
+  "grainOther": "மற்றவை",
+
+  "howCanIHelp": "வணக்கம்! நான் உங்கள் பண்ணை AI உதவியாளர். இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்? பயிர் விலைகள், விளைச்சல் குறிப்புகள் அல்லது ஆர்டர் உதவிகள் பற்றி நீங்கள் என்னிடம் கேட்கலாம்.",
+  "askAnything": "எதையும் கேளுங்கள்...",
+  "aiThinking": "AI சிந்திக்கிறது...",
+  "yieldPrediction": "விளைச்சல் கணிப்பு",
+  "sustainability": "நிலைத்தன்மை",
+  "area": "பரப்பளவு",
+  "season": "பருவம்",
+  "soilType": "மண் வகை",
+  "irrigation": "பாசனம்",
+  "predictYieldBtn": "விளைச்சலை கணி ✨",
+  "predictedYield": "கணிக்கப்பட்ட விளைச்சல்",
+  "confidence": "{percentage}% நம்பிக்கை",
+  "@confidence": {
+    "placeholders": {
+      "percentage": { "type": "String" }
+    }
+  },
+  "sustainabilityDesc": "உங்கள் விவசாய முறைகளை மதிப்பிட்டு, AI நிலைத்தன்மை மதிப்பெண்ணைப் பெறுங்கள் (0–100).",
+  "irrigationMethod": "பாசன முறை",
+  "fertilizerType": "உர வகை",
+  "cropRotationPracticed": "பயிர் சுழற்சி நடைமுறை",
+  "calculateScoreBtn": "மதிப்பெண் கணக்கிடு ♻️",
+  "needsImprovement": "முன்னேற்றம் தேவை ⚠️",
+  "good": "நன்று 👍",
+  "excellent": "சிறப்பு 🌟",
+  "improvementTips": "முன்னேற்ற குறிப்புகள்",
+  "markAllRead": "அனைத்தையும் படித்ததாக குறி",
+  "noNotificationsYet": "இன்னும் அறிவிப்புகள் இல்லை",
+  "youreAllCaughtUp": "நீங்கள் அனைத்தையும் படித்துவிட்டீர்கள்!",
+  "timeAgoM": "{minutes} நிமிடங்களுக்கு முன்",
+  "@timeAgoM": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "timeAgoH": "{hours} மணிநேரங்களுக்கு முன்",
+  "@timeAgoH": {
+    "placeholders": {
+      "hours": { "type": "int" }
+    }
+  },
+  "timeAgoD": "{days} நாட்களுக்கு முன்",
+  "@timeAgoD": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "noPriceData": "விலை தரவு கிடைக்கவில்லை",
+  "todaysRate": "இன்றைய விலை",
+  "quintal": "/குவிண்டால்",
+  "sevenDayTrend": "7 நாள் விலை போக்கு",
+  "historicalData": "வரலாற்று தரவு",
+  "simulatedUploadReady": "உருவகப்படுத்தப்பட்ட பதிவேற்றம் விவரம்",
+  "onboardingTitle1": "உங்கள் தானியங்களை\nநேரடியாக விற்கவும்",
+  "onboardingSub1": "தினை மற்றும் கோதுமை பயிர்களை எளிதாக பட்டியலிடுங்கள். இந்தியா முழுவதும் சரிபார்க்கப்பட்ட வாங்குபவர்களுடன் இணையுங்கள் — இடைத்தரகர்கள் இல்லை, அதிக லாபம்.",
+  "onboardingTitle2": "நியாமான விலைகள்,\nஒவ்வொரு பருவத்திலும்",
+  "onboardingSub2": "விலைகள் உண்மையான சந்தை விகிதங்களுக்கு இணைக்கப்பட்டுள்ளன. போட்டி விலையை நிர்ணயிக்க மற்றும் உங்கள் லாபத்தை அதிகரிக்க AI-இயங்கும் நுண்ணறிவு உதவும்.",
+  "onboardingTitle3": "நம்பகமான\nபரிவர்த்தனைகள்",
+  "onboardingSub3": "பரிசோதிக்கப்பட்ட விவசாயிகள், தரம் சரிபார்க்கப்பட்ட தானியங்கள் மற்றும் Razorpay மூலம் பாதுகாப்பான கட்டணங்கள். உங்கள் அறுவடை, உங்கள் வருமானம் — பாதுகாக்கப்பட்டது.",
+  "skip": "தவிர்",
+  "next": "அடுத்து",
+  "getStarted": "தொடங்குங்கள் 🌱"
+}

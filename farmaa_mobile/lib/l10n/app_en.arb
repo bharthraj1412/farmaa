@@ -1,0 +1,270 @@
+{
+  "@@locale": "en",
+
+  "appName": "Farmaa",
+  "tagline": "From Farm to Future",
+
+  "login": "Login",
+  "enterPhone": "Enter phone number",
+  "sendOtp": "Send OTP",
+  "enterOtp": "Enter OTP",
+  "verifyOtp": "Verify OTP",
+  "resendOtp": "Resend OTP",
+  "resendIn": "Resend in {seconds}s",
+  "@resendIn": {
+    "placeholders": {
+      "seconds": { "type": "int" }
+    }
+  },
+  "otpSentTo": "OTP sent to +91 {phone}",
+  "@otpSentTo": {
+    "placeholders": {
+      "phone": { "type": "String" }
+    }
+  },
+  "mobileNumber": "Mobile Number",
+  "iAmA": "I am a...",
+  "farmer": "Farmer",
+  "buyer": "Buyer",
+  "farmerDesc": "List your grains & manage crops",
+  "buyerDesc": "Browse and order grains",
+  "continue_btn": "Continue",
+  "createAccount": "Create Account 🌱",
+  "changeNumber": "← Change number",
+  "back": "← Back",
+  "enterPhoneStep": "Enter your mobile number to continue",
+  "verifyOtpStep": "Verify OTP and select your role",
+  "profileStep": "Tell us a little about yourself",
+  "yourName": "Your Name *",
+  "fullName": "Full name",
+  "village": "Village",
+  "district": "District *",
+  "selectDistrict": "Select district",
+  "organization": "Organization / Company",
+
+  "dashboard": "Dashboard",
+  "browse": "Browse",
+  "cart": "Cart",
+  "orders": "Orders",
+  "profile": "Profile",
+  "settings": "Settings",
+
+  "marketPrice": "Market Price",
+  "pricePerKg": "Price / kg",
+  "stockAvailable": "Stock Available",
+  "minOrder": "Min. Order",
+  "quantity": "Quantity",
+  "totalAmount": "Total Amount",
+  "allGrains": "All Grains",
+  "listingsFound": "{count} listings found",
+  "@listingsFound": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "searchCrops": "Search grains...",
+  "noGrainsFound": "No grains found",
+  "tryDifferentSearch": "Try a different search or category",
+  "loading": "Loading...",
+
+  "addToCart": "Add to Cart",
+  "buyNow": "Buy Now",
+  "viewCart": "View Cart",
+  "checkout": "Checkout",
+  "payNow": "Pay Now",
+  "orderSummary": "Order Summary",
+  "deliveryAddress": "Delivery Address",
+  "enterDeliveryAddress": "Enter full delivery address",
+  "cartEmpty": "Your cart is empty",
+  "cartEmptyHint": "Go back to the marketplace and add items.",
+  "browseGrains": "Browse Grains",
+  "proceedToCheckout": "Proceed to Checkout",
+  "remove": "Remove",
+
+  "orderPlaced": "Order Placed! 🎉",
+  "orderConfirmed": "Your order has been confirmed and sent to the farmer.",
+  "trackOrder": "Track Order",
+  "continueShopping": "Continue Shopping",
+  "orderId": "Order ID",
+  "crop": "Crop",
+  "amountPaid": "Amount Paid",
+  "myOrders": "My Orders",
+  "noOrdersYet": "No orders yet",
+  "ordersAppearHere": "Your orders will appear here",
+  "orderDetail": "Order Detail",
+  "estimatedDelivery": "Estimated Delivery",
+  "farmerContact": "Farmer Contact",
+  "pending": "Pending",
+  "confirmed": "Confirmed",
+  "processing": "Processing",
+  "shipped": "Shipped",
+  "delivered": "Delivered",
+  "cancelled": "Cancelled",
+  "paid": "Paid",
+  "failed": "Failed",
+  "refunded": "Refunded",
+  "confirmOrder": "Confirm Order",
+  "shipOrder": "Mark as Shipped",
+  "cancelOrder": "Cancel Order",
+  "buyerInfo": "Buyer Info",
+
+  "listNewGrain": "List New Grain",
+  "editListing": "Edit Listing",
+  "grainCategory": "Grain Category *",
+  "grainName": "Grain Name *",
+  "grainNameHint": "e.g., Basmati Rice",
+  "variety": "Variety (optional)",
+  "varietyHint": "e.g., HHB 67, K 9107",
+  "priceKgLabel": "Price per kg (₹) *",
+  "stockKgLabel": "Stock Available (kg) *",
+  "minOrderLabel": "Minimum Order (kg)",
+  "description": "Description",
+  "descriptionHint": "Describe grain quality, growing conditions, certifications...",
+  "submitForReview": "Submit for Review",
+  "saveChanges": "Save Changes",
+  "qaNotice": "Your listing will be reviewed by our quality team before going live.",
+  "cropUpdated": "Grain updated! Pending QA review.",
+  "cropSubmitted": "Grain submitted for QA approval! ✅",
+
+  "marketPrices": "Market Prices",
+  "aiAssistant": "AI Assistant",
+  "receivedOrders": "Received Orders",
+  "myCrops": "My Grains",
+  "addGrain": "Add Grain",
+
+  "verifiedAccount": "Verified Account",
+  "verificationPending": "Verification Pending ⓘ",
+  "editProfile": "Edit Profile",
+  "name": "Name",
+  "phone": "Phone",
+  "role": "Role",
+  "logout": "Logout",
+  "logoutConfirm": "Are you sure you want to logout?",
+  "cancel": "Cancel",
+  "save": "Save",
+  "saveChangesBtn": "Save Changes",
+  "profileUpdated": "Profile updated successfully",
+  "updateFailed": "Update failed",
+
+  "notifications": "Notifications",
+  "pushNotifications": "Push Notifications",
+  "pushNotificationsSubtitle": "Receive app notifications",
+  "priceAlerts": "Price Alerts",
+  "priceAlertsSubtitle": "Notify when market prices change",
+  "orderUpdates": "Order Updates",
+  "orderUpdatesSubtitle": "Notify on order status changes",
+  "language": "Language",
+  "selectLanguage": "Select Language",
+  "english": "English",
+  "tamil": "Tamil",
+  "about": "About",
+  "appVersion": "App Version",
+  "privacyPolicy": "Privacy Policy",
+  "termsOfService": "Terms of Service",
+  "helpSupport": "Help & Support",
+  "accountActions": "Account Actions",
+  "account": "Account",
+
+  "networkError": "Network Error",
+  "networkErrorMsg": "Could not connect to server. Please check your internet connection.",
+  "retry": "Retry",
+  "offlineMode": "Offline Mode",
+
+  "verifyIdentity": "Verify Identity",
+  "kycDesc": "To become a verified seller, please upload your Aadhaar or PAN card details.",
+  "submitDocuments": "Submit Documents",
+  "documentsSubmitted": "Documents submitted! Verification will complete in 24 hours.",
+
+  "aboutCrop": "About",
+  "priceGuarantee": "Price updated: {date}",
+  "@priceGuarantee": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "aiPriceInsight": "AI Market Insight",
+  "farmerDistrict": "{district} District",
+  "@farmerDistrict": {
+    "placeholders": {
+      "district": { "type": "String" }
+    }
+  },
+  "stockKg": "{stock} kg available",
+  "@stockKg": {
+    "placeholders": {
+      "stock": { "type": "String" }
+    }
+  },
+
+  "grainRice": "Rice",
+  "grainWheat": "Wheat",
+  "grainMillet": "Millet",
+  "grainBarley": "Barley",
+  "grainSorghum": "Sorghum",
+  "grainMaize": "Maize",
+  "grainPulses": "Pulses",
+  "grainOther": "Other",
+
+  "howCanIHelp": "Hello! I'm your Farmaa AI Assistant. How can I help you today? You can ask me about crop prices, yield tips, or order assistance.",
+  "askAnything": "Ask anything...",
+  "aiThinking": "AI is thinking...",
+  "yieldPrediction": "Yield Prediction",
+  "sustainability": "Sustainability",
+  "area": "Area",
+  "season": "Season",
+  "soilType": "Soil Type",
+  "irrigation": "Irrigation",
+  "predictYieldBtn": "Predict Yield ✨",
+  "predictedYield": "Predicted Yield",
+  "confidence": "{percentage}% confidence",
+  "@confidence": {
+    "placeholders": {
+      "percentage": { "type": "String" }
+    }
+  },
+  "sustainabilityDesc": "Evaluate your farming practices and get an AI sustainability score (0–100).",
+  "irrigationMethod": "Irrigation Method",
+  "fertilizerType": "Fertilizer Type",
+  "cropRotationPracticed": "Crop Rotation Practiced",
+  "calculateScoreBtn": "Calculate Score ♻️",
+  "needsImprovement": "Needs Improvement ⚠️",
+  "good": "Good 👍",
+  "excellent": "Excellent 🌟",
+  "improvementTips": "Improvement Tips",
+  "markAllRead": "Mark all read",
+  "noNotificationsYet": "No notifications yet",
+  "youreAllCaughtUp": "You're all caught up!",
+  "timeAgoM": "{minutes}m ago",
+  "@timeAgoM": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "timeAgoH": "{hours}h ago",
+  "@timeAgoH": {
+    "placeholders": {
+      "hours": { "type": "int" }
+    }
+  },
+  "timeAgoD": "{days}d ago",
+  "@timeAgoD": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "noPriceData": "No price data available",
+  "todaysRate": "Today's Rate",
+  "quintal": "/quintal",
+  "sevenDayTrend": "7-Day Price Trend",
+  "historicalData": "Historical Data",
+  "simulatedUploadReady": "Simulated Upload Ready",
+  "onboardingTitle1": "Sell Your Seeds\nDirectly",
+  "onboardingSub1": "List millet and wheat crops with ease. Connect with verified buyers across India — no middlemen, higher profits.",
+  "onboardingTitle2": "Fair Prices,\nEvery Season",
+  "onboardingSub2": "Prices anchored to real market rates. AI-powered insights help you set competitive prices and maximize your profits.",
+  "onboardingTitle3": "Trusted\nTransactions",
+  "onboardingSub3": "Verified farmers, quality-checked listings, and secure payments via Razorpay. Your harvest, your earnings — protected.",
+  "skip": "Skip",
+  "next": "Next",
+  "getStarted": "Get Started 🌱"
+}

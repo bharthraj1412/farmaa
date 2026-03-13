@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "603178299511",
+    "project_id": "farmaa-bdbe3",
+    "storage_bucket": "farmaa-bdbe3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:603178299511:android:2e71401374c02ad7eed672",
+        "android_client_info": {
+          "package_name": "farmaa.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "603178299511-igtc5nncdi8a56bt0c9a0rrks4uv9s9b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "farmaa.app",
+            "certificate_hash": "5fad951c54b6f51df38497f516487c026c5a5cea"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYe2qH26k3hgjtGIVCa42b94qmqr5GJ2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

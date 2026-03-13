@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "farmaa-backend"
+version = "1.0.0"
+description = "Farmaa – Agricultural Marketplace API"
+requires-python = ">=3.11"
+
+[tool.uvicorn]
+host = "0.0.0.0"
+port = 8000
+reload = true
