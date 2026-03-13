@@ -16,8 +16,8 @@ The project is divided into two main components:
 ## 🚀 Backend (FastAPI)
 
 ### Live Endpoints
-- **Base URL:** `https://farmaa-6zin.vercel.app`
-- **Swagger UI:** `https://farmaa-6zin.vercel.app/docs`
+- **Base URL:** `https://farmaa-ivory.vercel.app`
+- **Swagger UI:** `https://farmaa-ivory.vercel.app/docs`
 
 ### Key Features
 - **Authentication**: Phone-based OTP and Google Sign-In.

@@ -55,7 +55,7 @@ class EnvironmentConfig {
 
     // Default based on environment
     if (isProduction) {
-      return 'https://farmaa-6zin.vercel.app';
+      return 'https://farmaa-ivory.vercel.app';
     } else {
       return 'http://10.0.2.2:10000'; // Android emulator
     }

@@ -11,7 +11,7 @@ class AppConstants {
   static bool get isProduction => EnvironmentConfig.isProduction;
 
   /// Public HTTPS endpoint for production.
-  static const String prodUrl = 'https://farmaa-6zin.vercel.app';
+  static const String prodUrl = 'https://farmaa-ivory.vercel.app';
 
   /// Development URL (Android emulator maps 10.0.2.2 to host's localhost).
   static const String devUrl = 'http://10.0.2.2:10000';

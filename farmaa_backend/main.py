@@ -60,7 +60,7 @@ app.add_middleware(RequestLoggingMiddleware)
 # ── CORS – restrict origins in production ──
 if ENVIRONMENT == "production":
     allowed_origins = [
-        "https://farmaa-6zin.vercel.app",
+        "https://farmaa-ivory.vercel.app",
         "https://farmaa.app",
         "https://www.farmaa.app",
     ]
