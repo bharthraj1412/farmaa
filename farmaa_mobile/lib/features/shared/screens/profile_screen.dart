@@ -189,7 +189,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       children: [
                         _tile(Icons.person_outline, l.name, u.name),
                         _divider(),
-                        _tile(Icons.phone_outlined, l.phone, u.phone),
+                        _tile(Icons.phone_outlined, l.phone, u.phone ?? '-'),
                         _divider(),
                         if (u.isFarmer) ...[
                           if (u.village != null)
